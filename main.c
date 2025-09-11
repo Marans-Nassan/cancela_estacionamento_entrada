@@ -22,12 +22,12 @@ bool abrir = 0;
 Som*/
 #define buzzer_a 21
 #define div_buzz 100.0f
-#define wrap_buzz 2840
+#define wrap_buzz 2840 // div e o wrap = 440hz
 uint32_t slice_buzz = 0;
 //Servo
 #define servo 16
 #define div_servo 100.0f
-#define wrap_servo 24999 // div + wrap = 50HZ
+#define wrap_servo 24999 // div e o wrap = 50hz
 uint32_t slice_servo = 0;
 
 //i2c
@@ -41,8 +41,6 @@ ssd1306_t ssd;
 char str_permissao[10];
 uint16_t carros = 0;
 char str_estado[10];
-char str_limite[10] = {"400 = MAX"};
-
 
 //Interrupção
 #define interrupcoes(bots) gpio_irq_set_enabled_with_callback(bots, GPIO_IRQ_EDGE_FALL, true, &irq_gpio_handler);
