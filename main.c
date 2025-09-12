@@ -26,7 +26,7 @@ Som*/
 uint32_t slice_buzz = 0;
 bool tocar_sirene = 0;
 //Servo
-#define servo 16
+#define servo 28
 #define div_servo 100.0f
 #define wrap_servo 24999 // div e o wrap = 50hz
 uint32_t slice_servo = 0;
@@ -70,6 +70,8 @@ int main(){
     pwm_setup(slice_buzz, div_buzz, wrap_buzz, buzzer_a);
     pwm_setup(slice_servo, div_servo, wrap_servo, servo);
     pwm_set_gpio_level(servo, (wrap_servo * 75) / 1000);
+    
+    bool terminar = false;
 
     watchdog_enable(12000, 1);
     while (true) {
@@ -82,10 +84,38 @@ int main(){
             passagem();
 
         } else {
-        if(tocar_sirene) {
-            sirene(buzzer_a, wrap_buzz, 2);
-        }
-        sleep_ms(50);
+            if(tocar_sirene) {
+                sirene(buzzer_a, wrap_buzz, 2);
+            }
+
+            if(abrir){
+                if(terminar) continue;
+
+                //função pra fechar 
+                gpio_put(green_led, 0);
+                gpio_put(red_led, 1);
+                sprintf(str_permissao, "Entrada - X");
+                pwm_set_gpio_level(servo, (wrap_servo * 50) / 1000);
+                sleep_ms(500);
+                pwm_set_gpio_level(servo, (wrap_servo * 75) / 1000);
+                terminar = true;
+
+            } else {    
+                if (!terminar) 
+                    continue;
+
+                //função pra abrir
+                sprintf(str_permissao, "Entrada - O");
+                gpio_put(red_led, 0);
+                gpio_put(green_led, 1);
+                pwm_set_gpio_level(servo, (wrap_servo * 100) / 1000);
+                sleep_ms(500);
+                pwm_set_gpio_level(servo, (wrap_servo * 75) / 1000);
+                terminar = false;
+                carros++;
+            }
+            
+            sleep_ms(50);
         }
     }        
 }
@@ -135,28 +165,8 @@ void irq_gpio_handler(uint gpio, uint32_t events){
         }
 
     } else if ((gpio == bot_b && manual) && (current_time - last_time_b > 300)){
-        if(abrir){
-            //função pra fechar
-            abrir = 0;
-            gpio_put(green_led, 0);
-            gpio_put(red_led, 1);
-            sprintf(str_permissao, "Entrada - X");
-            pwm_set_gpio_level(servo, (wrap_servo * 50) / 1000);
-            sleep_ms(500);
-            pwm_set_gpio_level(servo, (wrap_servo * 75) / 1000);
-            last_time_b = current_time;
-
-        } else {
-            //função pra abrir
-            abrir = 1;
-            sprintf(str_permissao, "Entrada - O");
-            gpio_put(red_led, 0);
-            gpio_put(green_led, 1);
-            pwm_set_gpio_level(servo, (wrap_servo * 100) / 1000);
-            sleep_ms(500);
-            pwm_set_gpio_level(servo, (wrap_servo * 75) / 1000);
-            last_time_b = current_time;
-        }
+        abrir = !abrir;
+        last_time_b = current_time;
     } 
 }
 
