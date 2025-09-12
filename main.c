@@ -47,17 +47,17 @@ char str_estado[16] = {"Modo - Auto"};
 //Interrupção
 #define interrupcoes(bots) gpio_set_irq_enabled_with_callback(bots, GPIO_IRQ_EDGE_FALL, true, &irq_gpio_handler);
 
-void core1(void);
-void led_init(uint8_t led);
-void bot_init(void);
-void irq_gpio_handler(uint gpio, uint32_t events);
-void pwm_setup(uint32_t slice, float div, uint32_t wrap, uint8_t pin);
-void sirene(uint8_t pin, uint32_t wrap, uint8_t i);
-void i2c_setup(void);
-void oled_init(void);
+
+void core1(void); //função que determina o que o outro core faz (display).
+void led_init(uint8_t led); //config dos leds básicos.
+void bot_init(void); //config dos botões
+void irq_gpio_handler(uint gpio, uint32_t events); //Ajuste das interrupções
+void pwm_setup(uint32_t slice, float div, uint32_t wrap, uint8_t pin); //setup dos pwms.
+void sirene(uint8_t pin, uint32_t wrap, uint8_t i); //Som pwm pra quando transicionar entre os modos.
+void i2c_setup(void); //Setup do i2c pro display
+void oled_init(void); //Iniciação do siplay
 void oled_run(void); //display oled apresentando os valores
 void passagem(void); //lógica do loop principal
-
 
 int main(){
     multicore_launch_core1(core1);
@@ -212,7 +212,7 @@ void passagem(void){
     static uint64_t last_time = 0;
     if(!gpio_get(bot_c) && (current_time - last_time >300)){
         if(carros < 400){
-            sleep_ms(2000);
+            sleep_ms(2000); //Sleep pra simular o aperto do botão de entrada no estacionamento.
             carros++;
             abrir = 1;
             sprintf(str_permissao, "Entrada - O");
