@@ -77,7 +77,7 @@ O sistema permite controlar a entrada de veículos tanto de forma **automática*
 | Botão B      | GP6       |
 | Botão C      | GP22      |
 | Buzzer       | GP21      |
-| Servo Motor  | GP28      |
+| Servo Motor  | GP16      |
 | OLED SDA     | GP14      |
 | OLED SCL     | GP15      |
 
