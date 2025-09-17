@@ -26,7 +26,7 @@ Som*/
 uint32_t slice_buzz = 0;
 bool tocar_sirene = 0;
 //Servo
-#define servo 28
+#define servo 16
 #define div_servo 100.0f
 #define wrap_servo 24999 // div e o wrap = 50hz
 uint32_t slice_servo = 0;
